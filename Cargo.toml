@@ -5,3 +5,16 @@ edition = "2024"
 license = "Apache-2.0"
 
 [dependencies]
+anyhow = "1"
+chrono = "0.4"
+chrono-tz = "0.10"
+clap = { version = "4", features = ["derive"] }
+ctrlc = { version = "3", features = ["termination"] }
+iana-time-zone = "0.1"
+rusqlite = { version = "0.38", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+
+[dev-dependencies]
+tempfile = "3"
