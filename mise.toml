@@ -1,2 +1,14 @@
 [tools]
 rust = "1.99.0"
+
+[tasks.tests]
+description = "Run unit and CLI tests"
+run = "cargo test --locked"
+
+[tasks.tests-e2e]
+description = "Run the isolated Herdr Core test"
+run = "cargo test --locked real_core_recovers_and_collects_two_runs -- --ignored"
+
+[tasks.tests-all]
+description = "Run unit, CLI, and end-to-end tests"
+run = "cargo test --locked -- --include-ignored"

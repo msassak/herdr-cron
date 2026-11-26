@@ -16,6 +16,7 @@ Write a crontab, for example `~/.config/herdr-cron/crontab`:
 ```cron
 # Run a backup on weekdays at 08:30
 30 8 * * MON-FRI cd "$HOME/Work/my-repo" && ./backup
+# Check services every 15 minutes
 */15 * * * * "$HOME/.local/bin/check-services"
 ```
 
@@ -44,15 +45,16 @@ hc run --bg --no-parent --name herdr-cron -- \
 ## Runs and recovery
 
 - Different jobs may run concurrently. A job is skipped if its previous terminal is still live. Missed minutes are not replayed. If Core cannot be reached, dispatch pauses until it can inspect existing runs again.
-- State lives in `$XDG_STATE_HOME/herdr-cron` or `~/.local/state/herdr-cron`. Use `--state-dir` for an independent schedule and keep it pointed at the same Core session when restarting. Only one supervisor can serve a state directory at a time.
+- State lives in `$XDG_STATE_HOME/herdr-cron` or `~/.local/state/herdr-cron`. Use `--state-dir` for an independent schedule and keep it pointed at the same Core session when restarting. `serve` holds an exclusive OS file lock on `serve.lock` in that directory. A second supervisor exits with an error. The OS releases the lock when the supervisor exits, even after a crash.
 - The supervisor records each launch before asking Core to start the job. On restart, it matches labelled terminals to the ledger. A launch that may have happened but cannot be confirmed is marked `unknown`, never reissued.
 - `history` shows the terminal ID, exit result and output tail (up to 1,000 scrollback lines plus the screen, capped at 64 KiB). It is not a raw stdout/stderr log. The supervisor removes finished terminals only after saving the result. Run history is not automatically pruned.
 
 ## Tests
 
 ```sh
-mise exec -- cargo test --locked
-mise exec -- cargo test --locked real_core_recovers_and_collects_two_runs -- --ignored
+mise run tests       # Unit and CLI tests
+mise run tests-e2e   # Real Core test
+mise run tests-all   # Both
 ```
 
-The second test creates and stops its own Core instance with a private socket and scratch state.
+The real Core test creates and stops its own instance with a private socket and scratch state.
