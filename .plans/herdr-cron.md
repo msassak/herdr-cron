@@ -1,14 +1,14 @@
-# hc-cron Plan
+# herdr-cron plan
 
-**Status:** Proposed
+**Status:** MVP implemented.
 
 Build a standalone cron-like supervisor that uses `hc` to launch scheduled programs in herdr-core terminals and collect their results. **No changes to `hc` or herdr-core.** The supervisor owns scheduling and run history; core owns terminals, processes, and attachment.
 
 ## MVP
 
-- `hc-cron check <crontab>` validates the file, reports line-numbered errors, and prints upcoming fire times.
-- `hc-cron serve <crontab>` loads the schedule, dispatches due jobs, and collects results.
-- `hc-cron history` lists recent runs with their scheduled time, outcome, exit code when available, and a bounded output tail.
+- `herdr-cron check <crontab>` validates the file, reports line-numbered errors, and prints upcoming fire times.
+- `herdr-cron serve <crontab>` loads the schedule, dispatches due jobs, and collects results.
+- `herdr-cron history` lists recent runs with their scheduled time, outcome, exit code when available, and a bounded output tail.
 
 Use common user crontab syntax: five time fields followed by a shell command, with blank lines and comments. Use a parser that implements the traditional day-of-month/day-of-week matching rule. Run each command through `/bin/sh -c` so pipes, redirects, and `&&` work. Report unsupported cron features such as `@reboot` and unescaped `%` rather than silently interpreting them differently.
 
@@ -38,8 +38,8 @@ Use common user crontab syntax: five time fields followed by a shell command, wi
 It can run directly in a shell or in its own attachable hc terminal:
 
 ```sh
-hc run --bg --no-parent --name hc-cron -- \
-  hc-cron serve "$HOME/.config/hc-cron/crontab"
+hc run --bg --no-parent --name herdr-cron -- \
+  herdr-cron serve "$HOME/.config/herdr-cron/crontab"
 ```
 
 Running under `hc` does **not** make the scheduler boot-persistent. `--keep` restores a shell, not the original command. If unattended startup after reboot is needed, use `launchd` or `systemd` to supervise `hc-cron`.
