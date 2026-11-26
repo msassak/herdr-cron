@@ -1,6 +1,6 @@
 # herdr-cron
 
-User-level cron that plays nice with herdr core. herdr-cron runs scheduled commands in attachable Herdr Core terminals.
+User-level cron that plays nice with herdr core. herdr-cron runs scheduled commands in attachable hc terminals.
 It's a standalone supervisor built on top of hc and outside of system cron, optimized for herdr use cases including
 waking agents to perform specific tasks.
 
